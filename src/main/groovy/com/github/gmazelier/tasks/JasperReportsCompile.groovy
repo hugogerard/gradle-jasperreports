@@ -14,7 +14,7 @@ import static groovyx.gpars.GParsPool.withPool
 
 class JasperReportsCompile extends DefaultTask {
 
-	@InputFiles
+    @Classpath @InputFiles
 	Iterable<File> classpath
 	@InputDirectory
 	def File srcDir
@@ -37,6 +37,8 @@ class JasperReportsCompile extends DefaultTask {
 		if (verbose) log.lifecycle "Additional classpath: ${dependencies}"
 
 		def compilationTasks = []
+        // every reports are compiled as soon as this task is triggered
+        inputs.outOfDate {}
         srcDir.eachFileRecurse(FileType.FILES) { file ->
             if (file.name.endsWith(srcExt))
                 compilationTasks << [src: file, out: outputFile(file), deps: dependencies]
