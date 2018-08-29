@@ -1,5 +1,6 @@
 package com.github.gmazelier.tasks
 
+import groovy.io.FileType
 import net.sf.jasperreports.engine.JasperCompileManager
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
@@ -36,10 +37,10 @@ class JasperReportsCompile extends DefaultTask {
 		if (verbose) log.lifecycle "Additional classpath: ${dependencies}"
 
 		def compilationTasks = []
-		inputs.outOfDate { change ->
-			if (change.file.name.endsWith(srcExt))
-				compilationTasks << [src: change.file, out: outputFile(change.file), deps: dependencies]
-		}
+        srcDir.eachFileRecurse(FileType.FILES) { file ->
+            if (file.name.endsWith(srcExt))
+                compilationTasks << [src: file, out: outputFile(file), deps: dependencies]
+        }
 		inputs.removed { change ->
 			if (verbose) log.lifecycle "Removed file ${change.file.name}"
 			def fileToRemove = outputFile(change.file)

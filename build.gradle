@@ -7,8 +7,7 @@ buildscript {
 		maven { url "https://oss.sonatype.org/content/groups/public"}
 	}
 	dependencies {
-		classpath 'com.github.townsfolk:gradle-release:1.2'
-		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
+		classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
 	}
 }
 
@@ -17,6 +16,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
 repositories {
+	mavenLocal()
 	mavenCentral()
 	maven {
 		url 'http://jaspersoft.artifactoryonline.com/jaspersoft/third-party-ce-artifacts/'
@@ -30,14 +30,16 @@ repositories {
 }
 
 task wrapper(type: Wrapper) {
-	gradleVersion = '2.3'
+	gradleVersion = '4.8.1'
 }
 
 dependencies {
 	compile gradleApi()
 	compile localGroovy()
-	compile 'net.sf.jasperreports:jasperreports:6.2.0'
+	compile 'net.sf.jasperreports:jasperreports:6.7.0'
 	compile 'org.codehaus.gpars:gpars:1.2.1'
+    testCompile gradleTestKit()
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 compileGroovy {
@@ -95,6 +97,3 @@ bintray {
 	}
 }
 
-// Apply release plugin after 'publishing' extension configuration to avoid the following error:
-// Cannot configure the 'publishing' extension after it has been accessed.
-apply plugin: 'release'
